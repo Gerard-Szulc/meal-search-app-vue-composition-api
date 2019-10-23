@@ -1,5 +1,10 @@
 # meal-search-app-vue-composition-api
 
+Just some random learing purpose app with new vue composition api and mealDB api usage.
+
+You can search desired meal by specifying ingredient you want to use.
+
+The MealDB: https://www.themealdb.com/api.php
 ## Project setup
 ```
 npm install
