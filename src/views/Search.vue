@@ -1,6 +1,5 @@
 <template>
     <div id="my-view2" class="">
-        <p class="App-intro">Searching for meals by ingredient</p>
         <v-container id="my-view">
             <v-row class="">
                 <v-col
@@ -12,7 +11,7 @@
                     <v-lazy
                             v-model="meal.isActive"
                             :options="{
-                                threshold: 0.00
+                                threshold: 0.6
                             }"
                             min-height="200"
                             transition="fade-transition"

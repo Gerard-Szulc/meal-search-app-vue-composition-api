@@ -25,13 +25,17 @@
             </v-toolbar-title>
 
             <v-spacer></v-spacer>
-            <v-text-field
-                    label="Search"
-                    v-model="store.state.searchState.search"
-                    @input="searchHandler"
-                    @keypress.enter="handleSubmit"
-            ></v-text-field>
+            <v-expand-transition>
 
+                <v-text-field
+                        solo
+                        v-if="appState.searchOpened"
+                        label="Search"
+                        v-model="store.state.searchState.search"
+                        @input="searchHandler"
+                        @keypress.enter="handleSubmit"
+                ></v-text-field>
+            </v-expand-transition>
             <v-btn icon @click="handleSearchOpened">
                 <v-icon>mdi-magnify</v-icon>
             </v-btn>
@@ -58,7 +62,9 @@
             <v-container fluid>
 
                 <!-- If using vue-router -->
-                <router-view></router-view>
+                <keep-alive :include="['Search']">
+                    <router-view></router-view>
+                </keep-alive>
             </v-container>
         </v-content>
 
@@ -96,7 +102,7 @@
                 appState.searchOpened = !appState.searchOpened
             }
             const searchHandler = (e) => {
-              console.log('seachChanged', e)
+                console.log('seachChanged', e)
                 searchChangedHandler()
             }
             const handleSubmit = () => {
@@ -125,6 +131,6 @@
 
     .overflow-y-auto {
         overflow-y: auto;
-        max-height: 100vh;
+        max-height: 95vh;
     }
 </style>

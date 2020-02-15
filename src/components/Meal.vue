@@ -11,7 +11,7 @@
                     :lazy-src="`${meal.strMealThumb}/preview`"
                     aspect-ratio="1"
                     class="grey lighten-2"
-                    transition
+                    :transition="'fade-transition'"
             >
                 <template v-slot:placeholder>
                     <v-row
