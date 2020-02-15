@@ -1,83 +1,51 @@
 <template>
-    <div>
-        <SearchComponent :search="state.search" @search="handleSearch"/>
+    <div id="my-view2" class="">
         <p class="App-intro">Searching for meals by ingredient</p>
-        <!--        <div class="movies" style="display: flex; flex-wrap: wrap;">-->
-        <v-row>
-            <v-col cols="12" sm="12" offset-sm="">
-                <v-card>
-                    <v-container fluid>
-                        <v-row>
-                            <v-col
-                                    v-for="meal in state.meals"
-                                    :key="`container-${meal.idMeal}`"
-                                    class="d-flex child-flex"
-                                    cols="3"
-                            >
-                                <Meal :meal="meal"/>
-                            </v-col>
-                        </v-row>
-                    </v-container>
-                </v-card>
-            </v-col>
-        </v-row>
-        <!--        </div>-->
+        <v-container id="my-view">
+            <v-row class="">
+                <v-col
+                        v-for="meal in meals.meals"
+                        :key="`container-${meal.idMeal}`"
+                        class=""
+                        cols="3"
+                >
+                    <v-lazy
+                            v-model="meal.isActive"
+                            :options="{
+                                threshold: 0.00
+                            }"
+                            min-height="200"
+                            transition="fade-transition"
+                    >
+                        <Meal :meal="meal"/>
+                    </v-lazy>
+                </v-col>
+            </v-row>
+        </v-container>
     </div>
 
 </template>
 
 <script>
-    import SearchComponent from '../components/Search.vue';
+    import {store} from '../store/index'
     import Meal from '../components/Meal.vue';
-    import {reactive, onMounted} from '@vue/composition-api';
+    // import {useHandleMeals} from "../hooks/useHandleMeals";
 
     export default {
-        components: {SearchComponent, Meal},
+        components: {Meal},
         name: "Search",
         setup() {
-            const state = reactive({
-                search: '',
-                loading: true,
-                meals: []
-            });
-
-            async function getMeals(searchTerm) {
-                const MEAL_API_URL = `https://www.themealdb.com/api/json/v1/1/filter.php?i=${searchTerm}`;
-
-                let response = await fetch(MEAL_API_URL)
-
-                // const sortAlphaNum = (a, b) => a.strMeal.localeCompare(b.strMeal, 'en', { numeric: true });
-                let jsonResponse = await response.json()
-                // eslint-disable-next-line no-console
-                console.log(jsonResponse)
-                state.meals = jsonResponse.meals
-                state.loading = false;
-
-            }
-
-            onMounted(() => {
-                getMeals('')
-            });
-
             return {
-                state,
+                meals: store.state.meals,
+                searchState: store.state.searchState,
                 // eslint-disable-next-line no-unused-vars
-                handleSearch(searchTerm) {
-                    state.loading = true;
-                    state.search = searchTerm;
-                    getMeals(searchTerm)
-                },
-
+                handleSearch (searchTerm) {
+                    // $attrs.handleSearch(searchTerm)
+                }
             };
         }
     }
 </script>
 
 <style>
-    /*.placeholder-container {*/
-    /*    height: 100%;*/
-    /*    display: flex;*/
-    /*    justify-content: center;*/
-    /*    align-items: center;*/
-    /*}*/
 </style>
