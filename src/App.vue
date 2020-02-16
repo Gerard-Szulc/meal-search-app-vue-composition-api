@@ -2,9 +2,9 @@
     <v-app id="my-app">
         <v-app-bar
                 clipped-left
+                app
                 color="#fcb69f"
                 dark
-                shrink-on-scroll
                 src="https://picsum.photos/1920/1080?random"
                 scroll-target=".overflow-y-auto"
 
@@ -29,11 +29,11 @@
 
                 <v-text-field
                         solo
-                        v-if="appState.searchOpened"
+                        v-if="searchOpened"
                         label="Search"
-                        v-model="store.state.searchState.search"
+                        :value="$store.state.searchState.search"
                         @input="searchHandler"
-                        @keypress.enter="handleSubmit"
+                        @keypress.enter="handleSearchSubmit"
                 ></v-text-field>
             </v-expand-transition>
             <v-btn icon @click="handleSearchOpened">
@@ -49,10 +49,18 @@
                 <v-icon>mdi-dots-vertical</v-icon>
             </v-btn>
         </v-app-bar>
-        <v-navigation-drawer left absolute temporary app v-model="appState.drawerOpened">
-            <!-- -->
-        </v-navigation-drawer>
+        <v-navigation-drawer clipped left temporary app v-model="drawerOpened"
 
+        >
+            <v-toolbar></v-toolbar>
+            <v-toolbar flat>
+                <v-list>
+                    <v-list-group>
+                        <v-list-item-title class="title">Filter</v-list-item-title>
+                    </v-list-group>
+                </v-list>
+            </v-toolbar>
+        </v-navigation-drawer>
 
         <!-- Sizes your content based upon application components -->
         <v-content :tag="'main'" class="overflow-y-auto">
@@ -75,55 +83,51 @@
 </template>
 
 <script>
-    import {store} from "./store";
+    import {mapState, mapActions} from 'vuex'
     import Header from './components/Header.vue';
-    import {onMounted, reactive} from '@vue/composition-api'
-    import {useHandleMeals} from "./hooks/useHandleMeals";
 
     export default {
         name: 'app',
         components: {Header},
 
-        setup() {
-            const {state, getMeals, handleSearch, searchChangedHandler} = useHandleMeals()
-
-            const appState = reactive({
-                search: '',
+        data() {
+            return {
                 drawerOpened: false,
                 searchOpened: false
-            })
-            onMounted(() => {
-                getMeals()
-            });
-            const handleDrawerOpened = () => {
-                appState.drawerOpened = !appState.drawerOpened
             }
-            const handleSearchOpened = () => {
-                appState.searchOpened = !appState.searchOpened
-            }
-            const searchHandler = (e) => {
-                console.log('seachChanged', e)
-                searchChangedHandler()
-            }
-            const handleSubmit = () => {
-                handleSearch(store.state.searchState.search)
-            }
+        },
+        mounted() {
+            this.getMeals()
+        },
 
-            return {
-                state,
-                store,
-                handleSearch,
-                handleSubmit,
-                searchHandler,
-                appState,
-                handleDrawerOpened,
-                handleSearchOpened
+        computed: {
+            ...mapState({meals: state => state.meals.meals})
+        },
+        methods: {
+            ...mapActions({
+                getMeals: 'getMeals',
+                setSearchTerm: 'setSearchTerm'
+            }),
+            handleDrawerOpened() {
+                this.drawerOpened = !this.drawerOpened
+            },
+            handleSearchOpened() {
+                this.searchOpened = !this.searchOpened
+            },
+            searchHandler(e) {
+                console.log('searchChanged', e)
+                this.setSearchTerm(e)
+            },
+            handleSearchSubmit() {
+                this.getMeals(this.$store.state.searchState.search)
             }
         }
     }
 </script>
 <style>
     #my-app {
+        width: 100%;
+        position: absolute;
         overflow: hidden;
         height: 100%;
         max-height: 100vh;

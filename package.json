@@ -51,6 +51,20 @@
       "autoprefixer": {}
     }
   },
+  "pwa": {
+    "name": "meals",
+    "workboxPluginMode": "InjectManifest",
+    "workboxOptions": {
+      "swSrc": "src/sw.js"
+    },
+    "manifestOptions": {
+      "name": "meals",
+      "short_name": "meals",
+      "start_url": ".",
+      "display": "standalone",
+      "theme_color": "#4DBA87"
+    }
+  },
   "browserslist": [
     "> 1%",
     "last 2 versions"

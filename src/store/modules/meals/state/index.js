@@ -1,3 +1,5 @@
 export const state = {
-    meals: []
+    meals: [],
+    loading: false,
+    searchChanged: true
 }

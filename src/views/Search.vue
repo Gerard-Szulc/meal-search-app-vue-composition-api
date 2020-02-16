@@ -5,8 +5,7 @@
                 <v-col
                         v-for="meal in meals.meals"
                         :key="`container-${meal.idMeal}`"
-                        class=""
-                        cols="3"
+                        class="col-md-3 col-xs-6"
                 >
                     <v-lazy
                             v-model="meal.isActive"
@@ -16,7 +15,7 @@
                             min-height="200"
                             transition="fade-transition"
                     >
-                        <Meal :meal="meal"/>
+                        <Meal v-if="meal.isActive" :meal="meal"/>
                     </v-lazy>
                 </v-col>
             </v-row>
