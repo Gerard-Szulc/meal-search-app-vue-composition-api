@@ -3,7 +3,7 @@
         <h2>{{state.meal.strMeal}}</h2>
         <div class="meal-details">
             <section class="">
-                <img class="meal-thumb" :src="state.meal.strMealThumb" :alt="state.meal.strMeal">
+<!--                <img class="meal-thumb" :src="state.meal.strMealThumb" :alt="state.meal.strMeal">-->
                 <div class="resp-container meal-thumb">
                     <iframe
                             class="resp-iframe" :src="youtubeSrc" :poster="state.meal.strMealThumb" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen>
@@ -67,6 +67,7 @@
                     .then(jsonResponse => {
                         console.log(jsonResponse)
                         state.meal = jsonResponse.meals[0]
+                        context.root.$root.$store.commit('SET_PARALAX', state.meal.strMealThumb)
                         state.ingredients = Object.entries(state.meal)
                             .filter(([key]) => key.includes('strIngredient'))
                             .map(([key, value]) => {

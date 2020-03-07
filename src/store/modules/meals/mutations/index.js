@@ -13,5 +13,8 @@ export const mutations = {
     },
     SET_MEALS_SEARCH_CHAMGED_RESET: (state) => {
         state.searchChanged = false
+    },
+    SET_PARALAX: (state, payload) => {
+        state.paralax = payload
     }
 }

@@ -74,8 +74,9 @@
             <!-- Provides the application the proper gutter -->
             <v-container fluid>
                 <v-parallax
-                        src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"
+                        :src="paralax"
                 >
+
                 </v-parallax>
                 <keep-alive :include="['Search']">
                     <router-view></router-view>
@@ -109,9 +110,19 @@
         mounted() {
             this.getMeals()
         },
-
+        watch: {
+          $route: function (next, prev) {
+              console.log('route', prev.name, next.name)
+              if(next.name === 'home') {
+                  this.$store.commit('SET_PARALAX', 'https://cdn.vuetifyjs.com/images/parallax/material.jpg')
+              }
+          }
+        },
         computed: {
-            ...mapState({meals: state => state.meals.meals})
+            ...mapState({
+                meals: state => state.meals.meals,
+                paralax: state => state.meals.paralax
+            }),
         },
         methods: {
             ...mapActions({

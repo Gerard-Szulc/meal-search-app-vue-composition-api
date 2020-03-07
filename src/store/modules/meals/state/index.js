@@ -1,5 +1,6 @@
 export const state = {
     meals: [],
     loading: false,
-    searchChanged: true
+    searchChanged: true,
+    paralax: ''
 }
