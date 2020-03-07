@@ -7,16 +7,7 @@
                         :key="`container-${meal.idMeal}`"
                         class="col-md-3 col-xs-6"
                 >
-                    <v-lazy
-                            v-model="meal.isActive"
-                            :options="{
-                                threshold: 0.6
-                            }"
-                            min-height="200"
-                            transition="fade-transition"
-                    >
-                        <Meal v-if="meal.isActive" :meal="meal"/>
-                    </v-lazy>
+                    <Meal :meal="meal"/>
                 </v-col>
             </v-row>
         </v-container>
@@ -27,7 +18,6 @@
 <script>
     import {store} from '../store/index'
     import Meal from '../components/Meal.vue';
-    // import {useHandleMeals} from "../hooks/useHandleMeals";
 
     export default {
         components: {Meal},

@@ -1,13 +1,13 @@
 <template>
     <v-app id="my-app">
         <v-app-bar
-                clipped-left
+                :clipped-left="true"
                 app
                 color="#fcb69f"
                 dark
                 src="https://picsum.photos/1920/1080?random"
-                scroll-target=".overflow-y-auto"
-
+                prominent
+                shrink-on-scroll
         >
             <template v-slot:img="{ props }">
                 <v-img
@@ -27,14 +27,19 @@
             <v-spacer></v-spacer>
             <v-expand-transition>
 
-                <v-text-field
-                        solo
-                        v-if="searchOpened"
-                        label="Search"
-                        :value="$store.state.searchState.search"
-                        @input="searchHandler"
-                        @keypress.enter="handleSearchSubmit"
-                ></v-text-field>
+                    <div v-if="searchOpened"  style="display: flex">
+                        <v-text-field
+                                @blur.capture="() => searchOpened = false"
+                                solo
+                                label="Search by ingredient"
+                                :value="$store.state.searchState.search"
+                                @input="searchHandler"
+                                @keypress.enter="handleSearchSubmit"
+                                v-debounce:300="handleSearchSubmit"
+                        >
+
+                        </v-text-field>
+                    </div>
             </v-expand-transition>
             <v-btn icon @click="handleSearchOpened">
                 <v-icon>mdi-magnify</v-icon>
@@ -68,11 +73,15 @@
 
             <!-- Provides the application the proper gutter -->
             <v-container fluid>
-
-                <!-- If using vue-router -->
+                <v-parallax
+                        src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"
+                >
+                </v-parallax>
                 <keep-alive :include="['Search']">
                     <router-view></router-view>
                 </keep-alive>
+                <!-- If using vue-router -->
+
             </v-container>
         </v-content>
 
@@ -93,7 +102,8 @@
         data() {
             return {
                 drawerOpened: false,
-                searchOpened: false
+                searchOpened: false,
+                debounceContext: null
             }
         },
         mounted() {
@@ -115,26 +125,29 @@
                 this.searchOpened = !this.searchOpened
             },
             searchHandler(e) {
+
                 console.log('searchChanged', e)
+
                 this.setSearchTerm(e)
             },
             handleSearchSubmit() {
+                console.log('submit')
                 this.getMeals(this.$store.state.searchState.search)
             }
         }
     }
 </script>
 <style>
-    #my-app {
-        width: 100%;
-        position: absolute;
-        overflow: hidden;
-        height: 100%;
-        max-height: 100vh;
-    }
+    /*#my-app {*/
+    /*    width: 100%;*/
+    /*    position: absolute;*/
+    /*    overflow: hidden;*/
+    /*    height: 100%;*/
+    /*    max-height: 100vh;*/
+    /*}*/
 
-    .overflow-y-auto {
-        overflow-y: auto;
-        max-height: 95vh;
-    }
+    /*.overflow-y-auto {*/
+    /*    overflow-y: auto;*/
+    /*    max-height: 95vh;*/
+    /*}*/
 </style>

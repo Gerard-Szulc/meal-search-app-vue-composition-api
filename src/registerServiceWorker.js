@@ -1,6 +1,10 @@
 /* eslint-disable no-console */
 
 import { register } from 'register-service-worker'
+const updateFound = worker => {
+  console.log('updated and skip waiting', worker)
+  worker.postMessage({action: 'skipWaiting'})
+}
 
 if (process.env.NODE_ENV === 'production') {
   register(`${process.env.BASE_URL}service-worker.js`, {
@@ -19,8 +23,10 @@ if (process.env.NODE_ENV === 'production') {
     updatefound () {
       console.log('New content is downloading.')
     },
-  updated () {
+    updated (action) {
+      console.log(action)
       console.log('New content is available; please refresh.')
+      updateFound(action.waiting)
     },
     offline () {
       console.log('No internet connection found. App is running in offline mode.')
@@ -29,4 +35,18 @@ if (process.env.NODE_ENV === 'production') {
       console.error('Error during service worker registration:', error)
     }
   })
+  let refreshing;
+  if(navigator) {
+    if(navigator.serviceWorker) {
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        // This fires when the service worker controlling this page
+        // changes, eg a new worker has skipped waiting and become
+        // the new active worker.
+
+        if (refreshing) return;
+        window.location.reload()
+        refreshing = true
+      })
+    }
+  }
 }

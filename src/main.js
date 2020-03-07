@@ -5,6 +5,8 @@ import router from './router'
 import vuetify from './plugins/vuetify';
 import {store} from "./store";
 import './registerServiceWorker'
+import vueDebounce from 'vue-debounce'
+Vue.use(vueDebounce)
 
 
 Vue.use(VueCompositionApi);
