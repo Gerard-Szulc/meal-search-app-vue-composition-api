@@ -6,8 +6,6 @@
                 color="#fcb69f"
                 dark
                 src="https://picsum.photos/1920/1080?random"
-                prominent
-                shrink-on-scroll
         >
             <template v-slot:img="{ props }">
                 <v-img
@@ -76,8 +74,8 @@
                 <v-parallax
                         :src="paralax"
                 >
-
                 </v-parallax>
+
                 <keep-alive :include="['Search']">
                     <router-view></router-view>
                 </keep-alive>
@@ -109,6 +107,7 @@
         },
         mounted() {
             this.getMeals()
+            // this.$store.commit('SET_PARALAX', 'https://cdn.vuetifyjs.com/images/parallax/material.jpg')
         },
         watch: {
           $route: function (next, prev) {

@@ -2,5 +2,5 @@ export const state = {
     meals: [],
     loading: false,
     searchChanged: true,
-    paralax: ''
+    paralax: 'https://cdn.vuetifyjs.com/images/parallax/material.jpg'
 }
