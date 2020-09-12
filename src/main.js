@@ -6,8 +6,10 @@ import vuetify from './plugins/vuetify';
 import {store} from "./store";
 import './registerServiceWorker'
 import vueDebounce from 'vue-debounce'
+import startFirebase from "../firebase/init";
 Vue.use(vueDebounce)
 
+startFirebase()
 
 Vue.use(VueCompositionApi);
 
