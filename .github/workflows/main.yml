@@ -19,4 +19,4 @@ jobs:
         with:
           args: deploy
         env:
-          FIREBASE_TOKEN: ${{ secrets.FirebaseDeploy }}
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
