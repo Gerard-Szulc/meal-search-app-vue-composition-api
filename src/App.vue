@@ -19,16 +19,18 @@
       </v-app-bar-nav-icon>
 
       <v-toolbar-title>
-        <Header :title="''"/>
+        <v-breadcrumbs :items="routerItemsCrumbs" large></v-breadcrumbs>
+<!--        <Header :title="''"/>-->
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
       <v-expand-transition>
 
-        <div v-if="searchOpened" style="display: flex">
+        <div v-if="searchOpened" style="">
           <v-text-field
               @blur.capture="() => searchOpened = false"
               solo
+              hide-details
               label="Search by ingredient"
               :value="$store.state.searchState.search"
               @input="searchHandler"
@@ -101,28 +103,30 @@
 
 <script>
 import {mapState, mapActions} from 'vuex'
-import Header from './components/Header.vue';
+// import Header from './components/Header.vue';
 
 export default {
   name: 'app',
-  components: {Header},
+  components: {},
 
   data() {
     return {
       drawerOpened: false,
       searchOpened: false,
-      debounceContext: null
+      debounceContext: null,
+      routerItemsCrumbs: []
     }
   },
   async mounted() {
     await this.getMeals()
+    this.getBReadCrumbs()
     let chosenThumb = this.meals[this.getRandomIntInclusive(0, this.meals.length)].strMealThumb
     this.$store.commit('SET_PARALAX', {src: chosenThumb})
     this.startChangingParalax(this.$route)
   },
   watch: {
-    $route: function (next, prev) {
-      console.log('route', prev.name, next.name)
+    $route: function (next) {
+      this.getBReadCrumbs()
       if (next.name === 'home') {
         this.getRandomParalax()
       }
@@ -132,13 +136,23 @@ export default {
     ...mapState({
       meals: state => state.meals.meals,
       paralax: state => state.meals.paralax
-    }),
+    })
   },
   methods: {
     ...mapActions({
       getMeals: 'getMeals',
       setSearchTerm: 'setSearchTerm'
     }),
+    getBReadCrumbs () {
+      this.routerItemsCrumbs = this.$router.currentRoute.matched.map(el => {
+        return   {
+          disabled: false,
+          exact: true,
+          text: el.name,
+          to: el
+        }
+      })
+    },
     handleDrawerOpened() {
       this.drawerOpened = !this.drawerOpened
     },

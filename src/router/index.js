@@ -8,13 +8,16 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: Search
+    component: Search,
+    children: [
+      {
+        path: '/:id',
+        name: 'meal',
+        component: () => import('../views/MealDetails.vue')
+      }
+    ]
   },
-  {
-    path: '/:id',
-    name: 'meal',
-    component: () => import('../views/MealDetails.vue')
-  }
+
   // {
   //   path: '/about',
   //   name: 'about',

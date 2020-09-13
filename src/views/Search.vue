@@ -1,6 +1,6 @@
 <template>
-    <div id="my-view2" class="">
-        <v-container id="my-view">
+    <div id="" class="">
+        <v-container id="my-view" v-if="$route.name === 'home'">
             <v-row class="">
                 <v-col
                         v-for="meal in meals.meals"
@@ -11,6 +11,8 @@
                 </v-col>
             </v-row>
         </v-container>
+      <router-view v-else></router-view>
+
     </div>
 
 </template>
