@@ -2,6 +2,7 @@ import Vuex from 'vuex'
 import Vue from "vue";
 import {meals} from "./modules/meals/meals";
 import {searchState} from "./modules/search";
+
 Vue.use(Vuex)
 
 export const store = new Vuex.Store({
@@ -13,7 +14,7 @@ export const store = new Vuex.Store({
         count: 0
     },
     mutations: {
-        increment (state) {
+        increment(state) {
             state.count++
         }
     }

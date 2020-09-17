@@ -12,6 +12,11 @@ const firebaseConfig = {
 
 const startFirebase = () => {
     firebase.initializeApp(firebaseConfig)
-    return firebase.analytics();
+    let analytics
+    if (process.env.NODE_ENV === 'production') {
+        analytics = firebase.analytics();
+    }
+
+    return analytics
 }
 export default startFirebase

@@ -19,7 +19,6 @@ export function useHandleMeals () {
 
                 let response = await fetch(MEAL_API_URL)
                 let jsonResponse = await response.json()
-                console.log('meals loaded')
                 state.meals = jsonResponse.meals ? jsonResponse.meals : []
                 await store.commit('SET_MEALS', jsonResponse.meals)
                 state.loading = false;
@@ -33,7 +32,6 @@ export function useHandleMeals () {
             state: toRefs(state),
             // eslint-disable-next-line no-unused-vars
             handleSearch (searchTerm) {
-                console.log(searchTerm)
                 state.loading = true;
                 state.search = searchTerm;
                 getMeals(searchTerm)

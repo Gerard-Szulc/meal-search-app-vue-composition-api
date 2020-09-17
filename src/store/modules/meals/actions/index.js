@@ -8,7 +8,6 @@ export const actions = {
             commit('SET_MEALS_LOADING')
             let response = await fetch(MEAL_API_URL)
             let jsonResponse = await response.json()
-            console.log('meals loaded vuex')
             await commit('SET_MEALS', jsonResponse.meals ? jsonResponse.meals : [])
             commit('SET_MEALS_LOADED')
             commit('SET_MEALS_SEARCH_CHAMGED_RESET')

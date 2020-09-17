@@ -7,12 +7,19 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'home',
+    name: 'meals_list',
     component: Search,
+    meta: {
+      title: 'Meals list',
+    },
     children: [
       {
         path: '/:id',
         name: 'meal',
+        meta: {
+          dynamicTitle: true,
+          title: 'Meal',
+        },
         component: () => import('../views/MealDetails.vue')
       }
     ]

@@ -39,11 +39,8 @@
 
           </template>
         </div>
-
       </div>
     </div>
-
-
   </div>
 </template>
 
@@ -66,9 +63,13 @@ export default {
       fetch(MEAL_API_URL)
           .then(response => response.json())
           .then(jsonResponse => {
-            console.log(jsonResponse)
             state.meal = jsonResponse.meals[0]
-            context.root.$root.$store.commit('SET_PARALAX',  {src: state.meal.strMealThumb, title: state.meal.strMeal})
+            context.root.$root.$store.commit('SET_PARALAX', {src: state.meal.strMealThumb, title: state.meal.strMeal})
+            context.root.$root.$store.commit('SET_SAVED_DYNAMIC_BREADCRUMBS', {
+              routeName: context.root._route.name,
+              title: state.meal.strMeal
+            })
+            context.emit('mealLoaded')
             state.ingredients = Object.entries(state.meal)
                 .filter(([key]) => key.includes('strIngredient'))
                 .map(([key, value]) => {

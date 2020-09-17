@@ -88,7 +88,7 @@
         </v-parallax>
 
         <keep-alive :include="['Search']">
-          <router-view></router-view>
+          <router-view @mealLoaded="handleMealLoaded"></router-view>
         </keep-alive>
         <!-- If using vue-router -->
 
@@ -103,7 +103,6 @@
 
 <script>
 import {mapState, mapActions} from 'vuex'
-// import Header from './components/Header.vue';
 
 export default {
   name: 'app',
@@ -127,15 +126,19 @@ export default {
   watch: {
     $route: function (next) {
       this.getBReadCrumbs()
-      if (next.name === 'home') {
+      if (next.name === 'meals_list') {
         this.getRandomParalax()
       }
+    },
+    savedDynamicBreadcrumbs: function () {
+      this.getBReadCrumbs()
     }
   },
   computed: {
     ...mapState({
       meals: state => state.meals.meals,
-      paralax: state => state.meals.paralax
+      paralax: state => state.meals.paralax,
+      savedDynamicBreadcrumbs: state => state.meals.savedDynamicBreadcrumbs
     })
   },
   methods: {
@@ -143,12 +146,15 @@ export default {
       getMeals: 'getMeals',
       setSearchTerm: 'setSearchTerm'
     }),
+    handleMealLoaded () {
+      this.getBReadCrumbs()
+    },
     getBReadCrumbs () {
       this.routerItemsCrumbs = this.$router.currentRoute.matched.map(el => {
         return   {
           disabled: false,
           exact: true,
-          text: el.name,
+          text: el.meta.dynamicTitle ? this.savedDynamicBreadcrumbs[this.$route.name] : el.meta.title,
           to: el
         }
       })
@@ -166,17 +172,15 @@ export default {
     },
     searchHandler(e) {
 
-      console.log('searchChanged', e)
 
       this.setSearchTerm(e)
     },
     handleSearchSubmit() {
-      console.log('submit')
       this.getMeals(this.$store.state.searchState.search)
     },
     startChangingParalax (route) {
       setInterval(() => {
-        if (route.name === 'home') {
+        if (route.name === 'meals_list') {
           this.getRandomParalax()
         }
       }, 60000)
@@ -188,16 +192,4 @@ export default {
 }
 </script>
 <style>
-/*#my-app {*/
-/*    width: 100%;*/
-/*    position: absolute;*/
-/*    overflow: hidden;*/
-/*    height: 100%;*/
-/*    max-height: 100vh;*/
-/*}*/
-
-/*.overflow-y-auto {*/
-/*    overflow-y: auto;*/
-/*    max-height: 95vh;*/
-/*}*/
 </style>
