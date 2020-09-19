@@ -13,7 +13,7 @@
         </v-col>
       </v-row>
     </v-container>
-    <router-view @mealLoaded="() => $emit('mealLoaded')" v-else></router-view>
+    <router-view @meal-loaded="() => $emit('meal-loaded')" v-else></router-view>
 
   </div>
 

@@ -5,28 +5,35 @@
         <h2>{{ state.meal.strMeal }}</h2>
         <v-responsive class="resp-container meal-thumb">
           <iframe
-              class="resp-iframe" :src="youtubeSrc" :poster="state.meal.strMealThumb" frameborder="0" gesture="media"
-              allow="encrypted-media" allowfullscreen>
-          </iframe>
+            class="resp-iframe"
+            :src="youtubeSrc"
+            :poster="state.meal.strMealThumb"
+            frameborder="0"
+            gesture="media"
+            allow="encrypted-media"
+            allowfullscreen
+          ></iframe>
         </v-responsive>
         <p class="meal-description">{{ state.meal.strInstructions }}</p>
       </div>
 
       <div v-if="state.ingredients.length !== 0">
-
-        <h4>Ingredients: </h4>
+        <h4>Ingredients:</h4>
         <div class="ingredients-container">
           <template v-for="ingredient in state.ingredients">
-            <div :title="ingredient.amount + ': ' + ingredient.name" class="ingredient"
-                 v-if="ingredient.name && ingredient.name.length !== 0" :key="ingredient.ingredientId">
+            <div
+              :title="ingredient.amount + ': ' + ingredient.name"
+              class="ingredient"
+              v-if="ingredient.name && ingredient.name.length !== 0"
+              :key="ingredient.ingredientId"
+            >
               <div>
                 <div class="ingredients-title">{{ ingredient.amount }}</div>
                 <v-img
-                    :src="`https://www.themealdb.com/images/ingredients/${ingredient.name}-Small.png`"
-                    :lazy-src="`https://www.themealdb.com/images/ingredients/${ingredient.name}-Small.png`"
-                    aspect-ratio="1"
-
-                    class="grey lighten-2"
+                  :src="`https://www.themealdb.com/images/ingredients/${ingredient.name}-Small.png`"
+                  :lazy-src="`https://www.themealdb.com/images/ingredients/${ingredient.name}-Small.png`"
+                  aspect-ratio="1"
+                  class="grey lighten-2"
                 >
                   <template v-slot:placeholder>
                     <div class="placeholder-container">
@@ -36,7 +43,6 @@
                 </v-img>
               </div>
             </div>
-
           </template>
         </div>
       </div>
@@ -45,7 +51,7 @@
 </template>
 
 <script>
-import {reactive, onMounted, computed} from '@vue/composition-api';
+import { reactive, onMounted, computed } from "@vue/composition-api";
 
 export default {
   name: "MealDetails",
@@ -53,49 +59,58 @@ export default {
     const state = reactive({
       loading: true,
       meal: {},
-      ingredients: []
+      ingredients: [],
     });
-    const youtubeSrc = computed(() => state && state.meal && state.meal.strYoutube && state.meal.strYoutube.split('watch?v=').join('embed/'))
+    const youtubeSrc = computed(
+      () =>
+        state &&
+        state.meal &&
+        state.meal.strYoutube &&
+        state.meal.strYoutube.split("watch?v=").join("embed/")
+    );
 
     function getMeal(id) {
       const MEAL_API_URL = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`;
 
       fetch(MEAL_API_URL)
-          .then(response => response.json())
-          .then(jsonResponse => {
-            state.meal = jsonResponse.meals[0]
-            context.root.$root.$store.commit('SET_PARALAX', {src: state.meal.strMealThumb, title: state.meal.strMeal})
-            context.root.$root.$store.commit('SET_SAVED_DYNAMIC_BREADCRUMBS', {
-              routeName: context.root._route.name,
-              title: state.meal.strMeal
-            })
-            context.emit('mealLoaded')
-            state.ingredients = Object.entries(state.meal)
-                .filter(([key]) => key.includes('strIngredient'))
-                .map(([key, value]) => {
-                  return {
-                    ingredientId: key.slice('strIngredient'.length),
-                    name: value
-                  }
-                }).map(element => {
-                  element.amount = state.meal[`strMeasure${element.ingredientId}`]
-                  return element
-                })
-            state.loading = false;
+        .then((response) => response.json())
+        .then((jsonResponse) => {
+          state.meal = jsonResponse.meals[0];
+          context.root.$root.$store.commit("SET_PARALAX", {
+            src: state.meal.strMealThumb,
+            title: state.meal.strMeal,
           });
+          context.root.$root.$store.commit("SET_SAVED_DYNAMIC_BREADCRUMBS", {
+            routeName: context.root._route.name,
+            title: state.meal.strMeal,
+          });
+          context.emit("meal-loaded");
+          state.ingredients = Object.entries(state.meal)
+            .filter(([key]) => key.includes("strIngredient"))
+            .map(([key, value]) => {
+              return {
+                ingredientId: key.slice("strIngredient".length),
+                name: value,
+              };
+            })
+            .map((element) => {
+              element.amount = state.meal[`strMeasure${element.ingredientId}`];
+              return element;
+            });
+          state.loading = false;
+        });
     }
 
     onMounted(() => {
-      getMeal(context.root._route.params.id)
+      getMeal(context.root._route.params.id);
     });
 
     return {
       state,
-      youtubeSrc
+      youtubeSrc,
     };
-  }
-
-}
+  },
+};
 </script>
 
 <style scoped>
@@ -121,7 +136,7 @@ export default {
 .ingredients-title {
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap
+  white-space: nowrap;
 }
 
 .meal-description {
