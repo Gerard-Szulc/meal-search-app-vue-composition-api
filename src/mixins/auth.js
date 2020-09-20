@@ -1,13 +1,21 @@
 import { auth } from 'firebase'
+import { mapState } from "vuex";
 
 export default {
     data () {
         return {
         }
     },
+    computed: {
+        ...mapState({
+            user: (state) => state.user.user,
+        }),
+    },
     methods: {
         registerUser (email, password) {
-            auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+            auth().createUserWithEmailAndPassword(email, password).then((result) => {
+                console.log(result)
+            }).catch(function(error) {
                 // Handle Errors here.
                 const errorCode = error.code;
                 const errorMessage = error.message;
@@ -17,7 +25,9 @@ export default {
             });
         },
         loginUser (email, password) {
-            auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+            auth().signInWithEmailAndPassword(email, password).then((result) => {
+                console.log(result)
+            }).catch(function(error) {
                 // Handle Errors here.
                 var errorCode = error.code;
                 var errorMessage = error.message;
@@ -25,12 +35,14 @@ export default {
 
                 // ...
             });
+
         },
         listenToAuthStateChange () {
-            auth().onAuthStateChanged(function(user) {
+            auth().onAuthStateChanged((user) => {
                 if (user) {
                     // User is signed in.
                     this.$store.commit('SET_USER', user)
+                    this.$router.push({name: 'meals_list'})
                     // var displayName = user.displayName;
                     // var email = user.email;
                     // var emailVerified = user.emailVerified;
@@ -45,6 +57,17 @@ export default {
                     // User is signed out.
                     // ...
                 }
+            });
+        },
+        logoutUser (e) {
+            e.preventDefault()
+            auth().signOut().catch(function(error) {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                console.error(errorCode, errorMessage)
+
+                // ...
             });
         }
     }

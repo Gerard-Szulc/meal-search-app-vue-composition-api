@@ -1,15 +1,11 @@
 <template>
   <v-app id="my-app">
     <v-app-bar
-      :clipped-left="true"
       app
-      color="#fcb69f"
-      dark
-      src="https://picsum.photos/1920/1080?random"
     >
-      <template v-slot:img="{ props }">
-        <v-img v-bind="props" gradient="to top right, rgba(19,84,122,.5), rgba(128,208,199,.8)"></v-img>
-      </template>
+<!--      <template v-slot:img="{ props }">-->
+<!--        <v-img v-bind="props" gradient="to top right, rgba(19,84,122,.5), rgba(128,208,199,.8)"></v-img>-->
+<!--      </template>-->
 
       <v-app-bar-nav-icon @click="handleDrawerOpened"></v-app-bar-nav-icon>
 
@@ -47,16 +43,17 @@
       </v-btn>
     </v-app-bar>
 
-    <v-navigation-drawer clipped left temporary app v-model="drawerOpened">
-      <v-toolbar></v-toolbar>
-      <v-toolbar flat>
-        <v-list>
-          <v-list-group>
-            <v-list-item-title class="title">Filter</v-list-item-title>
-          </v-list-group>
-        </v-list>
-      </v-toolbar>
-    </v-navigation-drawer>
+    <NavigationDrawer :drawer="drawerOpened" v-on:closeDrawer="() => !drawerOpened"></NavigationDrawer>
+<!--    <v-navigation-drawer>-->
+<!--      <v-toolbar></v-toolbar>-->
+<!--      <v-toolbar flat>-->
+<!--        <v-list>-->
+<!--          <v-list-group>-->
+<!--            <v-list-item-title class="title">Filter</v-list-item-title>-->
+<!--          </v-list-group>-->
+<!--        </v-list>-->
+<!--      </v-toolbar>-->
+<!--    </v-navigation-drawer>-->
 
     <!-- Sizes your content based upon application components -->
     <v-main :tag="'main'" class>
@@ -86,9 +83,10 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import webStorage from "./webstorage/webstorage.js";
+import NavigationDrawer from "@/components/NavigationDrawer.vue";
 export default {
   name: "app",
-  components: {},
+  components: {NavigationDrawer},
 
   data() {
     return {
@@ -100,6 +98,19 @@ export default {
     };
   },
   async mounted() {
+    let matched = window.matchMedia('prefers-color-scheme: dark').matches;
+
+    if(matched) {
+      console.log('Currently in dark mode');
+      this.$vuetify.theme.dark = true
+    }
+    else {
+      console.log('Currently not in dark mode');
+      this.$vuetify.theme.dark = false
+    }
+
+
+
     await this.getMeals();
     this.getBReadCrumbs();
     let chosenThumb = this.meals[
