@@ -7,6 +7,14 @@ import {store} from "./store";
 import './registerServiceWorker'
 import vueDebounce from 'vue-debounce'
 import startFirebase from "../firebase/init";
+import Ads from 'vue-google-adsense'
+
+Vue.use(require('vue-script2'))
+
+Vue.use(Ads.Adsense)
+Vue.use(Ads.InArticleAdsense)
+Vue.use(Ads.InFeedAdsense)
+
 Vue.use(vueDebounce)
 
 startFirebase()

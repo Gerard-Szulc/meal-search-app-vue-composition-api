@@ -46,6 +46,7 @@
         <v-icon>mdi-dots-vertical</v-icon>
       </v-btn>
     </v-app-bar>
+
     <v-navigation-drawer clipped left temporary app v-model="drawerOpened">
       <v-toolbar></v-toolbar>
       <v-toolbar flat>

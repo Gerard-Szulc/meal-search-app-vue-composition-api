@@ -47,6 +47,10 @@
         </div>
       </div>
     </div>
+    <InArticleAdsense
+        data-ad-client="ca-pub-9105228405994491"
+        data-ad-slot="1234567890">
+    </InArticleAdsense>
   </div>
 </template>
 
