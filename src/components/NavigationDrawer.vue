@@ -26,11 +26,8 @@
         <v-list-item-title @click="$router.push('login')"> My account </v-list-item-title>
       </template>
 
-      <v-btn
-          icon
-          @click.stop="mini = !mini"
-      >
-        <v-icon>mdi-chevron-left</v-icon>
+      <v-btn v-if="user.hasOwnProperty('uid')" @click="logoutUser" icon title="Sign out">
+        <v-icon>mdi-exit-to-app</v-icon>
       </v-btn>
     </v-list-item>
 
@@ -54,9 +51,9 @@
     </v-list>
     <template v-slot:append>
       <v-divider></v-divider>
-      <div class="pa-2">
-        <v-btn block @click="logoutUser">Logout</v-btn>
-      </div>
+<!--      <div class="pa-2">-->
+<!--        <v-btn block @click="logoutUser">Logout</v-btn>-->
+<!--      </div>-->
         <v-btn
            @click="() => $vuetify.theme.dark = !$vuetify.theme.dark"
         >
