@@ -3,10 +3,6 @@
     <v-app-bar
       app
     >
-<!--      <template v-slot:img="{ props }">-->
-<!--        <v-img v-bind="props" gradient="to top right, rgba(19,84,122,.5), rgba(128,208,199,.8)"></v-img>-->
-<!--      </template>-->
-
       <v-app-bar-nav-icon @click="handleDrawerOpened"></v-app-bar-nav-icon>
 
       <v-toolbar-title>
@@ -82,15 +78,16 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
-import webStorage from "./webstorage/webstorage.js";
 import NavigationDrawer from "@/components/NavigationDrawer.vue";
+import { initializeFirestore } from "./firebase/init";
+
+
 export default {
   name: "app",
   components: {NavigationDrawer},
 
   data() {
     return {
-      favourites: {},
       drawerOpened: false,
       searchOpened: false,
       debounceContext: null,
@@ -119,9 +116,6 @@ export default {
     this.$store.commit("SET_PARALAX", { src: chosenThumb });
     this.startChangingParalax(this.$route);
   },
-  beforeMount() {
-    this.favourites = webStorage.getFavourites();
-  },
   watch: {
     $route: function (next) {
       this.getBReadCrumbs();
@@ -135,6 +129,7 @@ export default {
   },
   computed: {
     ...mapState({
+      favourites: (state) => state.user.favourites,
       meals: (state) => state.meals.meals,
       paralax: (state) => state.meals.paralax,
       savedDynamicBreadcrumbs: (state) => state.meals.savedDynamicBreadcrumbs,
@@ -144,20 +139,27 @@ export default {
     ...mapActions({
       getMeals: "getMeals",
       setSearchTerm: "setSearchTerm",
+      getFavourites: "getFavourites"
     }),
     handleFavourite() {
-      if (webStorage.getFavourite(this.$route.params.id)) {
-        webStorage.remove(this.$route.params.id);
-        this.favourites = webStorage.getFavourites();
-        return;
+      const db = initializeFirestore()
+      if (this.favourites.hasOwnProperty(this.$route.params.id)) {
+        db.collection(`users/${this.$store.state.user.user.uid}/favourites`).doc(this.$route.params.id).delete().then(() => {
+          this.getFavourites()
+          console.log("Document successfully deleted!");
+        }).catch(function(error) {
+          console.error("Error removing document: ", error);
+        });
+        return
       }
-      webStorage.setFavourite({
-        key: this.$route.params.id,
-        value: JSON.stringify(
-          this.meals.find((meal) => meal.idMeal === this.$route.params.id)
-        ),
+      db.collection(`users/${this.$store.state.user.user.uid}/favourites`).doc(this.$route.params.id).set(
+            this.meals.find((meal) => meal.idMeal === this.$route.params.id)
+      ).then(() => {
+        this.getFavourites()
+        console.log("Document successfully written!");
+      }).catch((error) => {
+            console.error("Error writing document: ", error);
       });
-      this.favourites = webStorage.getFavourites();
     },
     handleMealLoaded() {
       this.getBReadCrumbs();

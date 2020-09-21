@@ -4,6 +4,9 @@ export const mutations = {
     },
     SIGN_OUT_USER: (state) => {
         state.user = {}
+    },
+    SET_FAVOURITES: (state, payload) => {
+        state.favourites = payload
     }
     // SET_MEALS_LOADING: (state) => {
     //     state.loading = true

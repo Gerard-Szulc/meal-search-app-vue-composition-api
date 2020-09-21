@@ -74,9 +74,6 @@ export default {
       newPassword: "",
     };
   },
-  mounted() {
-    this.listenToAuthStateChange()
-  },
   computed: {
     signedUserId () {
       return this.user.hasOwnProperty('uid')

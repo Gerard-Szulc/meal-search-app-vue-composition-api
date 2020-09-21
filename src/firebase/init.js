@@ -22,4 +22,8 @@ const startFirebase = () => {
 
     return analytics
 }
-export default startFirebase
+const initializeFirestore = () => {
+    return firebase.firestore();
+}
+
+export { startFirebase, initializeFirestore }

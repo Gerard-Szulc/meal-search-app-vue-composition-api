@@ -1,10 +1,12 @@
-import { auth } from 'firebase'
-import { mapState } from "vuex";
+import {auth} from 'firebase'
+import {mapActions, mapState} from "vuex";
 
 export default {
-    data () {
-        return {
-        }
+    data() {
+        return {}
+    },
+    mounted() {
+        this.listenToAuthStateChange()
     },
     computed: {
         ...mapState({
@@ -12,10 +14,13 @@ export default {
         }),
     },
     methods: {
-        registerUser (email, password) {
+        ...mapActions({
+            getFavourites: "getFavourites"
+        }),
+        registerUser(email, password) {
             auth().createUserWithEmailAndPassword(email, password).then((result) => {
                 console.log(result)
-            }).catch(function(error) {
+            }).catch(function (error) {
                 // Handle Errors here.
                 const errorCode = error.code;
                 const errorMessage = error.message;
@@ -24,10 +29,10 @@ export default {
                 // ...
             });
         },
-        loginUser (email, password) {
+        loginUser(email, password) {
             auth().signInWithEmailAndPassword(email, password).then((result) => {
                 console.log(result)
-            }).catch(function(error) {
+            }).catch(function (error) {
                 // Handle Errors here.
                 var errorCode = error.code;
                 var errorMessage = error.message;
@@ -37,12 +42,25 @@ export default {
             });
 
         },
-        listenToAuthStateChange () {
+        listenToAuthStateChange() {
             auth().onAuthStateChanged((user) => {
                 if (user) {
                     // User is signed in.
                     this.$store.commit('SET_USER', user)
                     this.$router.push({name: 'meals_list'})
+                    this.getFavourites()
+                    // const db = initializeFirestore()
+                    //
+                    // db.collection(`users/${this.user.uid}/favourites`).get().then((querySnapshot) => {
+                    //     let data = {}
+                    //     querySnapshot.forEach(function(doc) {
+                    //         // doc.data() is never undefined for query doc snapshots
+                    //         console.log(doc.id, " => ", doc.data());
+                    //         data[doc.id] = doc.data()
+                    //     });
+                    //     this.$store.commit('SET_FAVOURITES', data)
+                    //
+                    // });
                     // var displayName = user.displayName;
                     // var email = user.email;
                     // var emailVerified = user.emailVerified;
@@ -59,9 +77,9 @@ export default {
                 }
             });
         },
-        logoutUser (e) {
+        logoutUser(e) {
             e.preventDefault()
-            auth().signOut().catch(function(error) {
+            auth().signOut().catch(function (error) {
                 // Handle Errors here.
                 var errorCode = error.code;
                 var errorMessage = error.message;

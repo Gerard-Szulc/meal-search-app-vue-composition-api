@@ -6,7 +6,7 @@ import vuetify from './plugins/vuetify';
 import {store} from "./store";
 import './registerServiceWorker'
 import vueDebounce from 'vue-debounce'
-import startFirebase from "../firebase/init";
+import { startFirebase } from "./firebase/init";
 import Ads from 'vue-google-adsense'
 
 Vue.use(require('vue-script2'))
