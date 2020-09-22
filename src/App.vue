@@ -30,7 +30,7 @@
       </v-btn>
 
       <v-expand-x-transition>
-        <v-btn icon v-if="$route.name === 'meal'" @click="handleFavourite">
+        <v-btn icon v-if="$route.name === 'meal' || $route.name === 'favouriteMeal'" @click="handleFavourite">
           <v-icon>{{favourites.hasOwnProperty($route.params.id) ? 'mdi-heart' : 'mdi-heart-outline'}}</v-icon>
         </v-btn>
       </v-expand-x-transition>
@@ -63,9 +63,7 @@
           </v-row>
         </v-parallax>
 
-        <keep-alive :include="['Search']">
           <router-view @meal-loaded="handleMealLoaded"></router-view>
-        </keep-alive>
         <!-- If using vue-router -->
       </v-container>
     </v-main>

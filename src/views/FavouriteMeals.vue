@@ -21,6 +21,7 @@
 <script>
 import {store} from '../store/index'
 import Meal from '../components/Meal.vue';
+import { computed } from "@vue/composition-api";
 
 export default {
   components: {
@@ -28,8 +29,10 @@ export default {
   },
   name: "FavouriteMeals",
   setup() {
+    let favourites = computed(() => store.state.user.favourites)
+
     return {
-      favourites: store.state.user.favourites,
+      favourites
       // searchState: store.state.searchState,
       // // eslint-disable-next-line no-unused-vars
       // handleSearch(searchTerm) {
