@@ -106,7 +106,9 @@ export default {
     }
 
     onMounted(() => {
-      getMeal(context.root._route.params.id);
+      if (context.root._route.name === 'meal' || context.root._route.name === 'favouriteMeal') {
+        getMeal(context.root._route.params.id);
+      }
     });
 
     return {

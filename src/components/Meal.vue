@@ -40,7 +40,7 @@
 
             <v-card-actions>
                 <v-btn
-                        @click="() => $router.push({name: 'meal', params: {id: meal.idMeal}})"
+                        @click="() => $router.push({name: pushDest, params: {id: meal.idMeal}})"
                         color="#59C8FF"
                         text
                 >
@@ -56,9 +56,9 @@
 
     export default {
         name: "Meal",
-        props: ['meal'],
+        props: ['meal', 'pushDest'],
         setup({meal }) {
-            const altText = computed(() => `The movie titled: ${meal.strMeal}`);
+            const altText = computed(() => `${meal.strMeal}`);
             return {altText};
         }
     };

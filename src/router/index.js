@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Search from '../views/Search.vue'
+import FavouriteMeals from "@/views/FavouriteMeals.vue";
 
 Vue.use(VueRouter)
 
@@ -32,6 +33,25 @@ const routes = [
       {
         path: '/:id',
         name: 'meal',
+        meta: {
+          dynamicTitle: true,
+          title: 'Meal',
+        },
+        component: () => import('../views/MealDetails.vue')
+      }
+    ]
+  },
+  {
+    path: '/favourites',
+    name: 'favourites',
+    component: FavouriteMeals,
+    meta: {
+      title: 'Favourite meals list',
+    },
+    children: [
+      {
+        path: '/favourites/:id',
+        name: 'favouriteMeal',
         meta: {
           dynamicTitle: true,
           title: 'Meal',
