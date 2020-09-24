@@ -2,9 +2,10 @@
   <v-navigation-drawer
       left
       app
-      permanent
+      :permanent="permanent"
       :value="active"
       :mini-variant.sync="mini"
+      @input="handleNavDrawerInput"
   >
     <v-list-item class="px-2" nav>
       <template v-if="user.hasOwnProperty('uid')">
@@ -54,12 +55,26 @@
 <!--      <div class="pa-2">-->
 <!--        <v-btn block @click="logoutUser">Logout</v-btn>-->
 <!--      </div>-->
-        <v-btn
-           @click="() => $vuetify.theme.dark = !$vuetify.theme.dark"
+      <v-list dense>
+        <v-list-item
+            @click="() => $vuetify.theme.dark = !$vuetify.theme.dark"
         >
-          <v-icon>{{ $vuetify.theme.dark ? 'mdi-brightness-4' : 'mdi-brightness-5' }}</v-icon>
-        </v-btn>
-<!--        <v-switch-->
+          <v-list-item-icon>
+            <v-icon>{{ $vuetify.theme.dark ? 'mdi-brightness-4' : 'mdi-brightness-5' }}</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>{{ $vuetify.theme.dark ? 'Bright mode' : 'Dark mode' }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+<!--      <v-col :cols="12">-->
+<!--      <v-btn-->
+<!--        >-->
+<!--          <v-icon>{{ $vuetify.theme.dark ? 'mdi-brightness-4' : 'mdi-brightness-5' }}</v-icon>-->
+<!--        </v-btn>-->
+<!--      </v-col>-->
+      <!--        <v-switch-->
 <!--            v-model="$vuetify.theme.dark"-->
 <!--            hide-details-->
 <!--            inset-->
@@ -79,21 +94,30 @@ export default {
   },
   name: "NavigationDrawer",
   watch: {
-    drawer: function () {
+    drawer: function (newVal) {
       this.mini = !this.mini
+      this.active = newVal
     }
   },
   data() {
     return {
       mini: true,
-      active: false,
+      active: true,
+      permanent: false,
       items: [
         {title: 'Meals list', icon: 'mdi-view-dashboard', name: 'meals_list'},
         {title: 'Favourite meals', icon: 'mdi-heart', name: 'favourites'},
-        {title: 'Account', icon: 'mdi-account-box'},
+        // {title: 'Account', icon: 'mdi-account-box'},
       ],
     }
   },
+  methods: {
+    handleNavDrawerInput (value) {
+      this.mini = value
+      this.active = value
+      this.$emit('closeDrawer', value)
+    }
+  }
 }
 </script>
 

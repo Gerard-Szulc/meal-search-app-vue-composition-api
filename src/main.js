@@ -8,7 +8,9 @@ import './registerServiceWorker'
 import vueDebounce from 'vue-debounce'
 import { startFirebase } from "./firebase/init";
 import Ads from 'vue-google-adsense'
+import Notifications from 'vue-notification'
 
+Vue.use(Notifications)
 Vue.use(require('vue-script2'))
 
 Vue.use(Ads.Adsense)

@@ -9,7 +9,6 @@ export const actions = {
                 let data = {}
                 querySnapshot.forEach(function(doc) {
                     // doc.data() is never undefined for query doc snapshots
-                    console.log(doc.id, " => ", doc.data());
                     data[doc.id] = doc.data()
                 });
                 commit('SET_FAVOURITES', data)

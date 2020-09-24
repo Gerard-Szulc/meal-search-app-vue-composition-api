@@ -1,6 +1,5 @@
 <template>
   <SignIn :register="true" :login="false"></SignIn>
-
 </template>
 
 <script>

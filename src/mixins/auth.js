@@ -1,7 +1,9 @@
 import {auth} from 'firebase'
 import {mapActions, mapState} from "vuex";
+import notifier from "@/mixins/notifier.js";
 
 export default {
+    mixins: [notifier],
     data() {
         return {}
     },
@@ -20,25 +22,24 @@ export default {
         registerUser(email, password) {
             auth().createUserWithEmailAndPassword(email, password).then((result) => {
                 console.log(result)
-            }).catch(function (error) {
+            }).catch((error) => {
                 // Handle Errors here.
                 const errorCode = error.code;
                 const errorMessage = error.message;
-
+                this.$errorNotify('error', errorCode, errorMessage)
                 console.error(errorCode, errorMessage)
                 // ...
             });
         },
         loginUser(email, password) {
-            auth().signInWithEmailAndPassword(email, password).then((result) => {
-                console.log(result)
-            }).catch(function (error) {
+            auth().signInWithEmailAndPassword(email, password).then(({user}) => {
+                this.$errorNotify('success', '', (user.displayName ? user.displayName : user.email)  + ' succesfully signed in.' )
+            }).catch((error) => {
                 // Handle Errors here.
                 var errorCode = error.code;
                 var errorMessage = error.message;
+                this.$errorNotify('error', errorCode, errorMessage)
                 console.error(errorCode, errorMessage)
-
-                // ...
             });
 
         },
@@ -49,44 +50,56 @@ export default {
                     this.$store.commit('SET_USER', user)
                     this.$router.push({name: 'meals_list'})
                     this.getFavourites()
-                    // const db = initializeFirestore()
-                    //
-                    // db.collection(`users/${this.user.uid}/favourites`).get().then((querySnapshot) => {
-                    //     let data = {}
-                    //     querySnapshot.forEach(function(doc) {
-                    //         // doc.data() is never undefined for query doc snapshots
-                    //         console.log(doc.id, " => ", doc.data());
-                    //         data[doc.id] = doc.data()
-                    //     });
-                    //     this.$store.commit('SET_FAVOURITES', data)
-                    //
-                    // });
-                    // var displayName = user.displayName;
-                    // var email = user.email;
-                    // var emailVerified = user.emailVerified;
-                    // var photoURL = user.photoURL;
-                    // var isAnonymous = user.isAnonymous;
-                    // var uid = user.uid;
-                    // var providerData = user.providerData;
-                    // ...
                 } else {
                     this.$store.commit('SIGN_OUT_USER', user)
-
-                    // User is signed out.
-                    // ...
                 }
             });
         },
         logoutUser(e) {
             e.preventDefault()
-            auth().signOut().catch(function (error) {
+            let user = {...this.user}
+            auth().signOut().then(() => {
+                this.$errorNotify('success', '', (user.displayName ? user.displayName : user.email)  + ' succesfully signed out.' )
+            }).catch((error) => {
                 // Handle Errors here.
                 var errorCode = error.code;
                 var errorMessage = error.message;
                 console.error(errorCode, errorMessage)
+                this.$errorNotify('error', errorCode, errorMessage)
 
                 // ...
             });
+        },
+        loginWithGoogle: function (event) {
+            event.preventDefault();
+            var provider = new auth.GoogleAuthProvider();
+
+            provider.addScope("openid");
+
+            auth().useDeviceLanguage();
+
+            auth()
+                .signInWithPopup(provider)
+                .then((result) => {
+                    // This gives you a Google Access Token. You can use it to access the Google API.
+                    //var token = result.credential.accessToken;
+                    // The signed-in user info.
+                    var user = result.user;
+                    // ...
+                    this.$errorNotify('success', '', user.displayName + ' succesfully signed in.' )
+
+                })
+                .catch((error) => {
+                    // Handle Errors here.
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    // The email of the user's account used.
+                    var email = error.email;
+                    // The firebase.auth.AuthCredential type that was used.
+                    var credential = error.credential;
+                    // ...
+                    this.$errorNotify('error', errorCode, errorMessage + email + credential)
+                });
         }
     }
 }

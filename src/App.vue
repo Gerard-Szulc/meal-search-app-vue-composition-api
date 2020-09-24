@@ -25,21 +25,22 @@
           ></v-text-field>
         </div>
       </v-expand-transition>
-      <v-btn icon @click="handleSearchOpened">
+      <v-expand-x-transition>
+      <v-btn icon @click="handleSearchOpened" v-if="$route.name === 'meals_list'">
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
-
+      </v-expand-x-transition>
       <v-expand-x-transition>
         <v-btn icon v-if="$route.name === 'meal' || $route.name === 'favouriteMeal'" @click="handleFavourite">
           <v-icon>{{favourites.hasOwnProperty($route.params.id) ? 'mdi-heart' : 'mdi-heart-outline'}}</v-icon>
         </v-btn>
       </v-expand-x-transition>
-      <v-btn icon>
-        <v-icon>mdi-dots-vertical</v-icon>
-      </v-btn>
+<!--      <v-btn icon>-->
+<!--        <v-icon>mdi-dots-vertical</v-icon>-->
+<!--      </v-btn>-->
     </v-app-bar>
 
-    <NavigationDrawer :drawer="drawerOpened" v-on:closeDrawer="() => !drawerOpened"></NavigationDrawer>
+    <NavigationDrawer :drawer="drawerOpened" v-on:closeDrawer="(value) => drawerOpened = !!value"></NavigationDrawer>
 <!--    <v-navigation-drawer>-->
 <!--      <v-toolbar></v-toolbar>-->
 <!--      <v-toolbar flat>-->
@@ -71,6 +72,7 @@
     <v-footer app>
       <!-- -->
     </v-footer>
+    <notifications />
   </v-app>
 </template>
 
@@ -96,11 +98,9 @@ export default {
     let matched = window.matchMedia('prefers-color-scheme: dark').matches;
 
     if(matched) {
-      console.log('Currently in dark mode');
       this.$vuetify.theme.dark = true
     }
     else {
-      console.log('Currently not in dark mode');
       this.$vuetify.theme.dark = false
     }
 
@@ -144,7 +144,6 @@ export default {
       if (this.favourites.hasOwnProperty(this.$route.params.id)) {
         db.collection(`users/${this.$store.state.user.user.uid}/favourites`).doc(this.$route.params.id).delete().then(() => {
           this.getFavourites()
-          console.log("Document successfully deleted!");
         }).catch(function(error) {
           console.error("Error removing document: ", error);
         });
