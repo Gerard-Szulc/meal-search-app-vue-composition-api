@@ -5,6 +5,8 @@ const updateFound = worker => {
   console.log('updated and skip waiting', worker)
   worker.postMessage({action: 'skipWaiting'})
 }
+let UpdatedEvent = new CustomEvent('swUpdated', { detail: null });
+
 
 if (process.env.NODE_ENV === 'production') {
   register(`${process.env.BASE_URL}service-worker.js`, {
@@ -24,9 +26,11 @@ if (process.env.NODE_ENV === 'production') {
       console.log('New content is downloading.')
     },
     updated (action) {
-      console.log(action)
       console.log('New content is available; please refresh.')
       updateFound(action.waiting)
+      UpdatedEvent.detail = action;
+      document.dispatchEvent(UpdatedEvent);
+
     },
     offline () {
       console.log('No internet connection found. App is running in offline mode.')
