@@ -5,6 +5,8 @@ Just some random learing purpose app with new vue composition api and mealDB api
 You can search desired meal by specifying ingredient you want to use.
 
 The MealDB: https://www.themealdb.com/api.php
+
+firebase hosted app: https://meal-recipes-f9f92.web.app/
 ## Project setup
 ```
 npm install
