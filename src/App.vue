@@ -73,6 +73,23 @@
       <!-- -->
     </v-footer>
     <notifications />
+    <notifications group="sw">
+      <template slot="body" slot-scope="props">
+        <div>
+          <a class="title">
+            {{props.item.title}}
+          </a>
+          <a class="close" @click="props.close">
+            <i class="fa fa-fw fa-close"></i>
+          </a>
+          <div v-html="props.item.text">
+          </div>
+          <div>
+            <v-btn @click="handleUpdateSW">Ok</v-btn>
+          </div>
+        </div>
+      </template>
+    </notifications>
   </v-app>
 </template>
 
@@ -95,6 +112,18 @@ export default {
     };
   },
   async mounted() {
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.addEventListener('message', event => {
+        // event is a MessageEvent object
+        if (event.data.action === 'skipWaiting') {
+          this.$notify({
+            group: 'sw',
+            text: event
+          })
+        }
+        console.log(`The service worker sent me a message: ${event.data}`);
+      });
+    }
     let matched = window.matchMedia('prefers-color-scheme: dark').matches;
 
     if(matched) {
@@ -139,6 +168,9 @@ export default {
       setSearchTerm: "setSearchTerm",
       getFavourites: "getFavourites"
     }),
+    handleUpdateSW () {
+      navigator.serviceWorker.skipWaiting()
+    },
     handleFavourite() {
       const db = initializeFirestore()
       if (this.favourites.hasOwnProperty(this.$route.params.id)) {
