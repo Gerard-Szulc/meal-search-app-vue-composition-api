@@ -41,11 +41,6 @@ export default {
     return {
       favourites,
       user
-      // searchState: store.state.searchState,
-      // // eslint-disable-next-line no-unused-vars
-      // handleSearch(searchTerm) {
-      //   // $attrs.handleSearch(searchTerm)
-      // }
     };
   }
 }

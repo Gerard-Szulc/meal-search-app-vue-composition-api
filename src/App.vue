@@ -56,6 +56,25 @@
     <v-main :tag="'main'" class>
       <!-- Provides the application the proper gutter -->
       <v-container fluid>
+        <v-snackbar
+            v-model="updateExists"
+            :multi-line="true"
+            top
+            rounded
+            color="success"
+        >
+          New content is available!
+
+          <template v-slot:action="{ attrs }">
+            <v-btn
+                text
+                v-bind="attrs"
+                @click="handleUpdateSW"
+            >
+              Refresh
+            </v-btn>
+          </template>
+        </v-snackbar>
         <v-parallax :src="paralax.src">
           <v-row v-if="paralax.title" align="center" justify="center">
             <v-col class="text-center" cols="12">
@@ -65,31 +84,12 @@
         </v-parallax>
 
         <router-view @meal-loaded="handleMealLoaded"></router-view>
-        <!-- If using vue-router -->
       </v-container>
     </v-main>
 
     <v-footer app>
-      <!-- -->
     </v-footer>
     <notifications/>
-    <notifications group="sw">
-      <template slot="body" slot-scope="props">
-        <div>
-          <a class="title">
-            {{ props.item.title }}
-          </a>
-          <a class="close" @click="props.close">
-            <i class="fa fa-fw fa-close"></i>
-          </a>
-          <div v-html="props.item.text">
-          </div>
-          <div>
-            <v-btn @click="handleUpdateSW">Ok</v-btn>
-          </div>
-        </div>
-      </template>
-    </notifications>
   </v-app>
 </template>
 
@@ -109,16 +109,28 @@ export default {
       searchOpened: false,
       debounceContext: null,
       routerItemsCrumbs: [],
+      refreshing: false,
+      registration: null,
+      updateExists: false,
     };
   },
+  created() {
+    document.addEventListener(
+        'swUpdated', (e) => {
+          console.log(e)
+          this.registration = e.detail
+          this.updateExists = true
+        }, {once: true}
+    );
+    navigator.serviceWorker.addEventListener(
+        'controllerchange', () => {
+          if (this.refreshing) return;
+          this.refreshing = true;
+          window.location.reload();
+        }
+    );
+  },
   async mounted() {
-    document.addEventListener('swUpdated', () => {
-      this.$notify({
-        group: 'sw',
-        type: 'success',
-        text: 'App ready to update, click "Ok" to proceed'
-      })
-    })
     let matched = window.matchMedia('prefers-color-scheme: dark').matches;
 
     if (matched) {
@@ -127,12 +139,12 @@ export default {
       this.$vuetify.theme.dark = false
     }
 
-
     await this.getMeals();
     this.getBReadCrumbs();
     let chosenThumb = this.meals[
         this.getRandomIntInclusive(0, this.meals.length)
         ].strMealThumb;
+
     this.$store.commit("SET_PARALAX", {src: chosenThumb});
     this.startChangingParalax(this.$route);
   },
@@ -162,7 +174,12 @@ export default {
       getFavourites: "getFavourites"
     }),
     handleUpdateSW() {
-      navigator.serviceWorker.skipWaiting()
+      this.updateExists = false;
+
+      if (!this.registration || !this.registration.waiting) {
+        return;
+      }
+      this.registration.waiting.postMessage('skipWaiting');
     },
     handleFavourite() {
       const db = initializeFirestore()

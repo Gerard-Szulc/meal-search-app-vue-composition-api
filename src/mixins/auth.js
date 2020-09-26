@@ -4,9 +4,6 @@ import notifier from "@/mixins/notifier.js";
 
 export default {
     mixins: [notifier],
-    data() {
-        return {}
-    },
     mounted() {
         this.listenToAuthStateChange()
     },
@@ -28,14 +25,12 @@ export default {
                 const errorMessage = error.message;
                 this.$errorNotify('error', errorCode, errorMessage)
                 console.error(errorCode, errorMessage)
-                // ...
             });
         },
         loginUser(email, password) {
             auth().signInWithEmailAndPassword(email, password).then(({user}) => {
                 this.$errorNotify('success', '', (user.displayName ? user.displayName : user.email)  + ' succesfully signed in.' )
             }).catch((error) => {
-                // Handle Errors here.
                 var errorCode = error.code;
                 var errorMessage = error.message;
                 this.$errorNotify('error', errorCode, errorMessage)
@@ -46,7 +41,6 @@ export default {
         listenToAuthStateChange() {
             auth().onAuthStateChanged((user) => {
                 if (user) {
-                    // User is signed in.
                     this.$store.commit('SET_USER', user)
                     this.$router.push({name: 'meals_list'})
                     this.getFavourites()
@@ -66,8 +60,6 @@ export default {
                 var errorMessage = error.message;
                 console.error(errorCode, errorMessage)
                 this.$errorNotify('error', errorCode, errorMessage)
-
-                // ...
             });
         },
         loginWithGoogle: function (event) {

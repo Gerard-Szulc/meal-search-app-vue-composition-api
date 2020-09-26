@@ -13,6 +13,12 @@ workbox.setConfig({
 workbox.core.clientsClaim()
 
 // Skip over the SW waiting lifecycle stage
-workbox.core.skipWaiting()
+// workbox.core.skipWaiting()
 
 workbox.precaching.cleanupOutdatedCaches()
+
+self.addEventListener("message", (e)=> {
+    if (e.data === 'skipWaiting') {
+        self.skipWaiting()
+    }
+})

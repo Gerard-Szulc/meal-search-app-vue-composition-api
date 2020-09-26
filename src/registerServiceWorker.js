@@ -1,12 +1,6 @@
 /* eslint-disable no-console */
 
 import { register } from 'register-service-worker'
-const updateFound = worker => {
-  console.log('updated and skip waiting', worker)
-  worker.postMessage({action: 'skipWaiting'})
-}
-let UpdatedEvent = new CustomEvent('swUpdated', { detail: null });
-
 
 if (process.env.NODE_ENV === 'production') {
   register(`${process.env.BASE_URL}service-worker.js`, {
@@ -16,8 +10,12 @@ if (process.env.NODE_ENV === 'production') {
         'For more details, visit https://goo.gl/AFskqB'
       )
     },
-    registered () {
+    registered (registration) {
       console.log('Service worker has been registered.')
+      setInterval(() => {
+        console.log('check update')
+        registration.update();
+      }, 1000 * 60)
     },
     cached () {
       console.log('Content has been cached for offline use.')
@@ -27,9 +25,7 @@ if (process.env.NODE_ENV === 'production') {
     },
     updated (action) {
       console.log('New content is available; please refresh.')
-      updateFound(action.waiting)
-      UpdatedEvent.detail = action;
-      document.dispatchEvent(UpdatedEvent);
+      document.dispatchEvent(new CustomEvent('swUpdated', { detail: action }));
 
     },
     offline () {
@@ -39,18 +35,4 @@ if (process.env.NODE_ENV === 'production') {
       console.error('Error during service worker registration:', error)
     }
   })
-  let refreshing;
-  if(navigator) {
-    if(navigator.serviceWorker) {
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        // This fires when the service worker controlling this page
-        // changes, eg a new worker has skipped waiting and become
-        // the new active worker.
-
-        if (refreshing) return;
-        window.location.reload()
-        refreshing = true
-      })
-    }
-  }
 }

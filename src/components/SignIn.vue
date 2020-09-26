@@ -32,14 +32,6 @@
 
     </v-row>
   </v-col>
-<!--    <button v-if="login === false && signedUserId === null" @click="login = true; register = false'-->
-<!--            class="md-raised md-primary">Sign In-->
-<!--    </button>-->
-<!--    <button v-if="register === false && signedUserId === null" @click='login = false; register = true'-->
-<!--            class="md-raised md-primary">Register-->
-<!--    </button>-->
-
-
 
 </template>
 <script>
