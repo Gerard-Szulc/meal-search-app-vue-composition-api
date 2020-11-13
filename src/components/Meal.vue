@@ -3,6 +3,7 @@
             v-slot:default="{ hover }"
     >
         <v-card
+                @click="() => $router.push({name: pushDest, params: {id: meal.idMeal}})"
                 class="mx-auto"
                 :elevation="hover ? 16 : 2"
         >
@@ -37,16 +38,6 @@
             <v-card-text class="text--primary">
                 <div class="meal-title">{{ meal.strMeal }}</div>
             </v-card-text>
-
-            <v-card-actions>
-                <v-btn
-                        @click="() => $router.push({name: pushDest, params: {id: meal.idMeal}})"
-                        color="#59C8FF"
-                        text
-                >
-                    Explore
-                </v-btn>
-            </v-card-actions>
         </v-card>
     </v-hover>
 </template>

@@ -101,8 +101,8 @@ export default {
   },
   data() {
     return {
-      mini: true,
-      active: true,
+      mini: false,
+      active: false,
       permanent: false,
       items: [
         {title: 'Meals list', icon: 'mdi-view-dashboard', name: 'meals_list'},

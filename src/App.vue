@@ -75,7 +75,7 @@
             </v-btn>
           </template>
         </v-snackbar>
-        <v-parallax :src="paralax.src">
+        <v-parallax v-if="$route.name === 'meal' || $route.name === 'favouriteMeal'" :src="paralax.src">
           <v-row v-if="paralax.title" align="center" justify="center">
             <v-col class="text-center" cols="12">
               <h1 class="display-1 font-weight-thin mb-4">{{ paralax.title }}</h1>
